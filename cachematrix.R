@@ -7,7 +7,7 @@
 # the inverse of the matrix, and the value is stored in the matrix object. 
 # If the inverse has been computed  beforehand and no changes have been made to the matrix
 # object, the cached value of the inverse is fetched, eliminating the need to redo a calculation
-
+# 
 
 makeCacheMatrix <- function(x = matrix()) {
 ## makeCacheMatrix creates a matrix object that can cache its inverse 
@@ -21,7 +21,7 @@ makeCacheMatrix <- function(x = matrix()) {
 	#Set the value of the matrix
 	set <- function(y){
 		x <<- y
-		invm <<- NULL
+		invm <<- NULL #if the matrix is changed it will reset the inverse
 	}
 
 	#Get the value of the matrix
@@ -29,7 +29,7 @@ makeCacheMatrix <- function(x = matrix()) {
 
 	#Set the value of the inverse
 	setInverse <- function(inverse) {
-		invm <<- inverse
+		invm <<- inverse #assume that the matrix supplied is always invertible
 	} 
 
 	#Get the value if the matrix
@@ -49,4 +49,26 @@ cacheSolve <- function(x, ...) {
 # 	x: a matrix 
 # 	...: extra parameters
 # Returns: A matrix that is the inverse of 'x'
+	
+	#Return the inverse matrix
+	invm <- x$getInverse()
+
+	#Return inverse form cache
+	if(!is.null(invm)){
+		message("Getting cached data")
+		return(invm)
+	}
+
+	#Get the matrix from the matrix object
+	data <- x$get()
+
+	#Calculate the inverse 
+	invm <- solve(data,...)
+
+	#Set the value of the inverse to the cached matrix obj
+	x$setInverse(invm)
+
+	#Return the matrix
+	invm
+
 }
